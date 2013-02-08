@@ -24,7 +24,8 @@ body {
 }
 
 div.content {
-  width: 27em;
+	max-width: 976px;
+	min-width: 27em;
   margin: 0 auto;
   text-align: left;
   padding: 10px;
@@ -111,6 +112,29 @@ blockquote .src {
 Ruby and Ruby frameworks.</p>
 
 <h2>News</h2>
+
+
+<dl>
+	<dt>February 7th, 2013</dt>
+	<p>
+	<strong>Todays releases are important. All users should upgrade ASAP!</strong>
+	<ul>
+		<li>CVE-2013-0262, symlink path traversal in Rack::File</li>
+		<li>CVE-2013-0263, timing attack against Rack::Session::Cookie</li>
+	</ul>
+	Some notes on <strong>CVE-2013-0263</strong> that affects all prior versions:
+	<ul>
+		<li>Some Rails users may not be affected (if they <strong>only</strong> use Rails managed sessions.</li>
+		<li>If users are using the Marshal (default) session cookie encoding, then those users are vulnerable to a <strong>Remote Code Execution</strong>, after a successful timing attack.</li>
+		<li>While some users may assume that timing attacks are not viable over the Internet, Cloud users in particular are reminded that intra-cloud latencies are sufficiently low to be viable.</li>
+	</ul>
+	</p>
+	<dd><strong>Rack 1.5.2</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/mZsuRonD7G8/DpZIOmMLbOgJ">released</a>!.</dd>
+	<dd><strong>Rack 1.4.5</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/bf937jPZxJM/1s6x95vIhmAJ">released</a>!.</dd>
+	<dd><strong>Rack 1.3.10</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/RnQxm6i13C4/xfakH81yWvgJ">released</a>!.</dd>
+	<dd><strong>Rack 1.2.8</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/hz-liLb9fKE/8jvVWU6xYiYJ">released</a>!.</dd>
+	<dd><strong>Rack 1.1.6</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/xKrHVWeNvDM/4ZGA576CnK4J">released</a>!.</dd>
+</dl>
 
 <dl>
 	<dt>January 28th, 2013</dt>

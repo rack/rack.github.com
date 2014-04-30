@@ -1,18 +1,21 @@
 body {
     font-family: Verdana, sans-serif;
-    margin: 0px;
-    background-color: #FFFFFF;
-    text-align: center;
+    margin: 0;
+}
+
+h1 {
+    padding: 10px;
+    background: #CCDDEE;
+
+    border: solid #7CBAE9;
+    border-width: 0 15px;
 }
 
 div.content {
-    max-width: 976px;
-    min-width: 27em;
+    width: 980px;
     margin: 0 auto;
-    text-align: left;
-    padding: 10px;
-    border-left: 15px solid #9CDAF9;
-    border-right: 15px solid #9CDAF9;
+    border: solid #9CDAF9;
+    border-width: 0 15px;
 }
 
 img#logo {
@@ -21,52 +24,37 @@ img#logo {
     padding-bottom: 1em;
 }
 
-h1, h2, h3, h4 {
-    margin-top: 1em;
-    margin-bottom: 0.33em;
-    border-left: 15px solid #7CBAE9;
-    margin-left: -25px;
-    border-right: 15px solid #7CBAE9;
-    margin-right: -25px;
-    padding: 10px;
-}
+div.content > header { padding-top: 15px; }
+div.content > header h1 { margin-top: 0; }
 
-h1 {
-    font-size: 200%;
-    margin-top: 0;
-    margin-bottom: 0;
-    font-weight: bold;
+div.content > header h1, div.content > header p {
+    background: initial;
+    padding-left: 20px;
 }
-
-h2 {
-    font-size: 130%;
-}
-
-h3 { font-size: 120%; }
 
 a { color: #0066B2; text-decoration: none; }
 a:visited { color: #6CAAD9; }
 a:hover { text-decoration: underline; }
 
-pre {
-    background-color: #BBDFFA;
-    padding: 0.2em;
-    margin: 0.5em 0;
+.code {
+    font-family: monospace;
+    background-color: #EEE;
 }
 
-p {
-    margin-bottom: 0.5em;
+pre.code {
+    padding: 10px;
+    margin: 0.5em 1em;
+    display: block;
 }
 
-ul li {
-    list-style-type: disc;
-    margin-left: 1.5em;
-    margin-bottom: 0.33em;
+span.code {
+    padding: 2px;
+    border: 1px solid silver;
 }
 
 footer#imprint {
     font-size: small;
-    margin-top: 2.5em;
+    padding: 2.5em 0;
     text-align: center;
 }
 
@@ -81,4 +69,47 @@ blockquote {
 
 blockquote .src {
     text-align: right;
+}
+
+section.layout {
+    display: inline-block;
+    vertical-align: top;
+    width: 455px;
+    margin: 0 12px;
+    padding: 0;
+}
+
+section.overview p {
+    padding-left: 20px;
+}
+
+/* {{{ Center the sections */
+
+div.content {
+    text-align: center;
+}
+
+div.content * {
+    text-align: initial;
+}
+
+/* }}} */
+
+/* {{{ Neat-O Header Borders */
+
+div.content > header h1 {
+    margin: 0 -15px;
+}
+
+section.layout section h1 {
+}
+
+section.layout#info section h1 {
+}
+
+/* }}} */
+
+div.syntaxhighlighter {
+    padding: 10px 0;
+    margin-bottom: 0 ! important;
 }

@@ -7,15 +7,18 @@
     <meta name="date" content="Thu Aug 21 12:41:29 CEST 2008" />
     <meta name="DC.Title" content="Rack: a Ruby Webserver Interface" />
     <meta name="DC.Creator" content="Christian Neukirchen" />
-    <link rel="stylesheet" href="reset.css" />
     <link rel="stylesheet" href="style.css" />
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushRuby.min.js"></script>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shCore.min.css" />
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shThemeRDark.min.css" />
 </head>
 <body>
     <div class="content">
         <header>
             <h1>Rack: a Ruby Webserver Interface</h1>
 
-            <p><img id="logo" src="rack-logo.png" alt="Rack powers web applications" /></p>
+            <img id="logo" src="rack-logo.png" alt="Rack powers web applications" />
 
             <p>
                 <strong>Rack</strong> provides a minimal interface between
@@ -23,259 +26,284 @@
             </p>
         </header>
 
-        <section id="news">
-            <h1>News</h1>
+        <section class="overview">
+            <p>
+                To use Rack, provide an "app": an object that responds to the
+                <span class="code">call</span> method, taking the environment
+                hash as a parameter, and returning an Array with three elements:
+                <ul>
+                    <li>The HTTP response code</li>
+                    <li>A Hash of headers</li>
+                    <li>The response body, which must respond to <span class="code">each</span></li>
+                </ul>
+            </p>
+            <p>You can handle an app directly:</p>
+            <pre class="brush: ruby">
+                # my_rack_app.rb
 
-            <dl>
-                <dt>February 7th, 2013</dt>
+                require 'rack'
+
+                app = Proc.new do |env|
+                    ['200', {'Content-Type' =&gt; 'text/html'}, ['A barebones rack app.']]
+                end
+
+                Rack::Handler::WEBrick.run app
+            </pre>
+            <p>
+                Or, you can use the <span class="code">rackup</span> command line
+                tool and avoid specifying details like port and server until
+                runtime:
+            </p>
+            <pre class="brush: ruby">
+                # config.ru
+
+                run Proc.new { |env| ['200', {'Content-Type' =&gt; 'text/html'}, ['get rack\'d']] }
+            </pre>
+            <p>Invoked like so:</p>
+            <pre class="code">$ rackup config.ru</pre>
+            <p>... and you're good to go!</p>
+            <p>Outrageous.</p>
+        </section>
+
+        <section class="layout" id="main">
+            <section id="news">
+                <h1>News</h1>
+
+                <dl>
+                    <dt>February 7th, 2013</dt>
+                    <p>
+                    <strong>Today's releases are important. All users should upgrade ASAP!</strong>
+                    <ul>
+                        <li>CVE-2013-0262, symlink path traversal in Rack::File</li>
+                        <li>CVE-2013-0263, timing attack against Rack::Session::Cookie</li>
+                    </ul>
+                    Some notes on <strong>CVE-2013-0263</strong> that affects all prior versions:
+                    <ul>
+                        <li>Some Rails users may not be affected (if they <strong>only</strong> use Rails managed sessions).</li>
+                        <li>If users are using the Marshal (default) session cookie encoding, then those users are vulnerable to a <strong>Remote Code Execution</strong>, after a successful timing attack.</li>
+                        <li>While some users may assume that timing attacks are not viable over the Internet, Cloud users in particular are reminded that intra-cloud latencies are sufficiently low to be viable.</li>
+                    </ul>
+                    </p>
+                    <dd><strong>Rack 1.5.2</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/mZsuRonD7G8/DpZIOmMLbOgJ">released</a>!.</dd>
+                    <dd><strong>Rack 1.4.5</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/bf937jPZxJM/1s6x95vIhmAJ">released</a>!.</dd>
+                    <dd><strong>Rack 1.3.10</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/RnQxm6i13C4/xfakH81yWvgJ">released</a>!.</dd>
+                    <dd><strong>Rack 1.2.8</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/hz-liLb9fKE/8jvVWU6xYiYJ">released</a>!.</dd>
+                    <dd><strong>Rack 1.1.6</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/xKrHVWeNvDM/4ZGA576CnK4J">released</a>!.</dd>
+                </dl>
+
+                <dl>
+                    <dt>January 28th, 2013</dt>
+                    <dd><strong>Rack 1.5.1</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/IL2eSS7tC9Y/discussion">released</a>!.</dd>
+                </dl>
+
+                <dl>
+                    <dt>January 21st, 2013</dt>
+                    <dd><strong>Rack 1.5.0</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/MDKy9M6ApmA/discussion">released</a>!.</dd>
+                </dl>
+
+                <dl>
+                    <dt>January 13th, 2013</dt>
+                    <p><strong>Today's releases are again a minor DoS. All users should ugprade!</strong></p>
+                    <dd><strong>Rack 1.4.4</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/ImYOqcGiksw/discussion">released</a>!.</dd>
+                    <dd><strong>Rack 1.3.9</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/apHVUk7cUxI/discussion">released</a>!.</dd>
+                    <dd><strong>Rack 1.2.7</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/nQQFg01Gx3E/discussion">released</a>!.</dd>
+                    <dd><strong>Rack 1.1.5</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/wNQGB2oqcvk/discussion">released</a>!.</dd>
+                </dl>
+
+                <dl>
+                    <dt>January 7th, 2013</dt>
+                    <dd><strong>Rack 1.4.3</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/-MWPHDeGWtI/discussion">released</a>!. <br>See security fix <a href="https://github.com/rack/rack/commit/f95113402b7239f225282806673e1b6424522b18">here</a>. <br>All users should upgrade!</dd>
+                    <dd><strong>Rack 1.3.8</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/-MWPHDeGWtI/discussion">released</a>!. <br>See security fix <a href="https://github.com/rack/rack/commit/f95113402b7239f225282806673e1b6424522b18">here</a>. <br>All users should upgrade!</dd>
+                </dl>
+
+                <dl>
+                    <dt>January 6th, 2013</dt>
+                    <dd><strong>Rack 1.4.2</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/KREbQ4VwtTY/discussion">released</a>!. <br>See DoS vector report <a href="https://groups.google.com/d/msg/rack-devel/1w4_fWEgTdI/XAkSNHjtdTsJ">here</a>. <br>All users should upgrade!</dd>
+                    <dd><strong>Rack 1.3.7</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/Szibc3K9G60/discussion">released</a>!. <br>See DoS vector report <a href="https://groups.google.com/d/msg/rack-devel/1w4_fWEgTdI/XAkSNHjtdTsJ">here</a>. <br>All users should upgrade!</dd>
+                    <dd><strong>Rack 1.2.6</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/W5XtUHmNLl0/discussion">released</a>!. <br>See DoS vector report <a href="https://groups.google.com/d/msg/rack-devel/1w4_fWEgTdI/XAkSNHjtdTsJ">here</a>. <br>All users should upgrade!</dd>
+                    <dd><strong>Rack 1.1.4</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/ThuEAOcf8b0/discussion">released</a>!. <br>See DoS vector report <a href="https://groups.google.com/d/msg/rack-devel/1w4_fWEgTdI/XAkSNHjtdTsJ">here</a>. <br>All users should upgrade!</dd>
+                </dl>
+
+                <dl>
+                    <dt>January 23rd, 2012<dt>
+                    <dd><strong>Rack 1.4.1</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/RACK$201.4.1/rack-devel/DaojPjITivc/wUX8d_qUULIJ">released</a>!</dd>
+
+                    <dt>December 28th, 2011<dt>
+                    <dd><strong>Rack 1.4.0</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$201.4.0/rack-devel/feyXEqGorPU/zVxV8K9UOTkJ">released</a>!</dd>
+
+                    <dt>December 28th, 2011<dt>
+                    <dd><strong>Rack 1.3.6</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.6/rack-devel/Gk74wz5GH_4/OlQ3qt2LDvsJ">released</a>!</dd>
+
+                    <dt>October 18th, 2011<dt>
+                    <dd><strong>Rack 1.3.5</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.5/rack-devel/pqB8SO4IlKc/qxPRNGdiankJ">released</a>!</dd>
+
+                    <dt>October 1st, 2011<dt>
+                    <dd><strong>Rack 1.3.4</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.4/rack-devel/I2kdRUjFYmk/gspBXNTTtLYJ">released</a>!</dd>
+
+                    <dt>September 16th, 2011<dt>
+                    <dd><strong>Rack 1.3.3</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.3/rack-devel/yjWi-xiBFBM/gQNuF2D-AfEJ">released</a>!</dd>
+
+                    <dt>July 26th, 2011<dt>
+                    <dd><strong>Rack 1.3.2</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack/rack-devel/699aztSFFns/n0QMkbdoOJ0J">released</a>!</dd>
+
+                    <dt>July 13th, 2011<dt>
+                    <dd><strong>Rack 1.3.1</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.1/rack-devel/vDV8nDCXm6s/Y2Q9x5NguvMJ">released</a>!</dd>
+
+                    <dt>May 23rd, 2011<dt>
+                    <dd><strong>Rack 1.3.0</strong> has been <a href="http://groups.google.com/group/rack-devel/browse_thread/thread/7dce0d9b17ec9cb3">released</a>!</dd>
+
+                    <dt>June 13th, 2010</dt><dd>
+                    <strong>Rack 1.2.0</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/364270">released</a>!</dd>
+
+                    <dt>January 3rd, 2010</dt><dd>
+                    <strong>Rack 1.1.0</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/354528">released</a>!</dd>
+
+                    <dt>October 18th, 2009</dt><dd>
+                    <strong>Rack 1.0.1</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/348498">released</a>!</dd>
+
+                    <dt>April 25th, 2009</dt><dd>
+                    <strong>Rack 1.0.0</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/334996">released</a>!</dd>
+
+                    <dt>January 9th, 2009</dt><dd>
+                    <strong>Rack 0.9.1</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/324389">released</a>!  This is a security release, please update.</dd>
+
+                    <dt>January 6th, 2009</dt><dd><strong>Rack 0.9</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/324073">released</a>!</dd>
+
+                    <dt>December 24th, 2008</dt><dd><a href="http://groups.google.com/group/rack-devel/browse_thread/thread/a5f156a8c592ab1c">Introducing the Rack Core Team</a></dd>
+
+                    <dt>December 23rd, 2008</dt><dd><a href="http://www.heise.de/newsticker/Rails-Erfinder-stellt-Rails-Metal-vor--/meldung/120849">Rack is mentioned on heise.de</a>!</dd>
+
+                    <dt>December 5th, 2008</dt><dd><a href="http://weblog.rubyonrails.org/2008/12/5/this-week-in-edge-rails">The tighter integration of Rails with Rack continues.</a></dd>
+
+                    <dt>August 21st, 2008</dt><dd><strong>Rack 0.4</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/312148">released</a>!</dd>
+
+                    <dt>May 31st, 2008</dt><dd>Rack development <a href="https://github.com/rack/rack">moves to Git</a>.</dd>
+
+                    <dt>May 24th, 2008</dt><dd>There now is a Google Group on <a href="http://groups.google.com/group/rack-devel">Rack Development</a>.</dd>
+
+                    <dt>February 26th, 2008</dt><dd><strong>Rack 0.3</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/292557">released</a>!</dd>
+
+                    <dt>November 10th, 2007</dt><dd>Rack has been presented at the Euruko 2007.</dd>
+
+                    <dt>October 2007</dt><dd>Ryan Allen gave a <a href="http://yeahnah.org/files/rack-presentation-oct-07.pdf">presentation on Rack</a> (PDF).</dd>
+
+                    <dt>May 16th, 2007</dt><dd><strong>Rack 0.2</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/251804">released</a>!</dd>
+                </dl>
+            </section>
+        </section>
+
+        <section class="layout" id="info">
+            <section id="documentation">
+                <h1>Documentation</h1>
+
+                <ul>
+                    <li><a href="http://rack.rubyforge.org/doc/SPEC.html">Rack interface specification</a></li>
+                    <li><a href="http://rack.rubyforge.org/doc/">Other documentation</a></li>
+                </ul>
+            </section>
+
+            <section id="contact">
+                <h1>Contact</h1>
+
+                <ul>
+                    <li><a href="mailto:rack-devel@googlegroups.com">rack-devel@googlegroups.com</a> (<a href="http://groups.google.com/group/rack-devel">archives</a>)</li>
+                    <li><span class="code">#rack</span> on <a href="http://freenode.net/">Freenode</a></li>
+                </ul>
+            </section>
+
+            <section id="more-information">
+                <h1>More information</h1>
+
+                <ul>
+                    <li><a href="http://chneukirchen.org/blog/archive/2007/02/introducing-rack.html">Introducing Rack</a>, an introductory blog post by Christian Neukirchen.</li>
+                    <li><a href="http://rubyforge.org/projects/rack/">Rack project at Rubyforge</a>.</li>
+                    <li><a href="http://wiki.github.com/rack/rack">The Rack Wiki</a> has tutorials and presentations.</li>
+                </ul>
+            </section>
+
+            <section id="license">
+                <h1>License</h1>
+
                 <p>
-                <strong>Today's releases are important. All users should upgrade ASAP!</strong>
-                <ul>
-                    <li>CVE-2013-0262, symlink path traversal in Rack::File</li>
-                    <li>CVE-2013-0263, timing attack against Rack::Session::Cookie</li>
-                </ul>
-                Some notes on <strong>CVE-2013-0263</strong> that affects all prior versions:
-                <ul>
-                    <li>Some Rails users may not be affected (if they <strong>only</strong> use Rails managed sessions).</li>
-                    <li>If users are using the Marshal (default) session cookie encoding, then those users are vulnerable to a <strong>Remote Code Execution</strong>, after a successful timing attack.</li>
-                    <li>While some users may assume that timing attacks are not viable over the Internet, Cloud users in particular are reminded that intra-cloud latencies are sufficiently low to be viable.</li>
-                </ul>
+                    Rack is licensed under the very liberal
+                    <a href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>.
                 </p>
-                <dd><strong>Rack 1.5.2</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/mZsuRonD7G8/DpZIOmMLbOgJ">released</a>!.</dd>
-                <dd><strong>Rack 1.4.5</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/bf937jPZxJM/1s6x95vIhmAJ">released</a>!.</dd>
-                <dd><strong>Rack 1.3.10</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/RnQxm6i13C4/xfakH81yWvgJ">released</a>!.</dd>
-                <dd><strong>Rack 1.2.8</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/hz-liLb9fKE/8jvVWU6xYiYJ">released</a>!.</dd>
-                <dd><strong>Rack 1.1.6</strong> has been <a href="https://groups.google.com/d/msg/rack-devel/xKrHVWeNvDM/4ZGA576CnK4J">released</a>!.</dd>
-            </dl>
+            </section>
 
-            <dl>
-                <dt>January 28th, 2013</dt>
-                <dd><strong>Rack 1.5.1</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/IL2eSS7tC9Y/discussion">released</a>!.</dd>
-            </dl>
+            <section id="get-it">
+                <h1>Get it!</h1>
+                <p>Current stable release:</p>
+                <pre class="code">gem install rack</pre>
 
-            <dl>
-                <dt>January 21st, 2013</dt>
-                <dd><strong>Rack 1.5.0</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/MDKy9M6ApmA/discussion">released</a>!.</dd>
-            </dl>
+                <h1>Bleeding-Edge</h1>
+                <p>Available on GitHub:</p>
+                <pre class="code">git clone git://github.com/rack/rack.git</pre>
 
-            <dl>
-                <dt>January 13th, 2013</dt>
-                <p><strong>Today's releases are again a minor DoS. All users should ugprade!</strong></p>
-                <dd><strong>Rack 1.4.4</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/ImYOqcGiksw/discussion">released</a>!.</dd>
-                <dd><strong>Rack 1.3.9</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/apHVUk7cUxI/discussion">released</a>!.</dd>
-                <dd><strong>Rack 1.2.7</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/nQQFg01Gx3E/discussion">released</a>!.</dd>
-                <dd><strong>Rack 1.1.5</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/wNQGB2oqcvk/discussion">released</a>!.</dd>
-            </dl>
+                <p>
+                    The repository is <a href="https://github.com/rack/rack">browsable online</a>, too.
+                </p>
 
-            <dl>
-                <dt>January 7th, 2013</dt>
-                <dd><strong>Rack 1.4.3</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/-MWPHDeGWtI/discussion">released</a>!. <br>See security fix <a href="https://github.com/rack/rack/commit/f95113402b7239f225282806673e1b6424522b18">here</a>. <br>All users should upgrade!</dd>
-                <dd><strong>Rack 1.3.8</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/-MWPHDeGWtI/discussion">released</a>!. <br>See security fix <a href="https://github.com/rack/rack/commit/f95113402b7239f225282806673e1b6424522b18">here</a>. <br>All users should upgrade!</dd>
-            </dl>
-
-            <dl>
-                <dt>January 6th, 2013</dt>
-                <dd><strong>Rack 1.4.2</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/KREbQ4VwtTY/discussion">released</a>!. <br>See DoS vector report <a href="https://groups.google.com/d/msg/rack-devel/1w4_fWEgTdI/XAkSNHjtdTsJ">here</a>. <br>All users should upgrade!</dd>
-                <dd><strong>Rack 1.3.7</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/Szibc3K9G60/discussion">released</a>!. <br>See DoS vector report <a href="https://groups.google.com/d/msg/rack-devel/1w4_fWEgTdI/XAkSNHjtdTsJ">here</a>. <br>All users should upgrade!</dd>
-                <dd><strong>Rack 1.2.6</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/W5XtUHmNLl0/discussion">released</a>!. <br>See DoS vector report <a href="https://groups.google.com/d/msg/rack-devel/1w4_fWEgTdI/XAkSNHjtdTsJ">here</a>. <br>All users should upgrade!</dd>
-                <dd><strong>Rack 1.1.4</strong> has been <a href="https://groups.google.com/d/topic/rack-devel/ThuEAOcf8b0/discussion">released</a>!. <br>See DoS vector report <a href="https://groups.google.com/d/msg/rack-devel/1w4_fWEgTdI/XAkSNHjtdTsJ">here</a>. <br>All users should upgrade!</dd>
-            </dl>
-
-            <dl>
-                <dt>January 23rd, 2012<dt>
-                <dd><strong>Rack 1.4.1</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/RACK$201.4.1/rack-devel/DaojPjITivc/wUX8d_qUULIJ">released</a>!</dd>
-
-                <dt>December 28th, 2011<dt>
-                <dd><strong>Rack 1.4.0</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$201.4.0/rack-devel/feyXEqGorPU/zVxV8K9UOTkJ">released</a>!</dd>
-
-                <dt>December 28th, 2011<dt>
-                <dd><strong>Rack 1.3.6</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.6/rack-devel/Gk74wz5GH_4/OlQ3qt2LDvsJ">released</a>!</dd>
-
-                <dt>October 18th, 2011<dt>
-                <dd><strong>Rack 1.3.5</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.5/rack-devel/pqB8SO4IlKc/qxPRNGdiankJ">released</a>!</dd>
-
-                <dt>October 1st, 2011<dt>
-                <dd><strong>Rack 1.3.4</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.4/rack-devel/I2kdRUjFYmk/gspBXNTTtLYJ">released</a>!</dd>
-
-                <dt>September 16th, 2011<dt>
-                <dd><strong>Rack 1.3.3</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.3/rack-devel/yjWi-xiBFBM/gQNuF2D-AfEJ">released</a>!</dd>
-
-                <dt>July 26th, 2011<dt>
-                <dd><strong>Rack 1.3.2</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack/rack-devel/699aztSFFns/n0QMkbdoOJ0J">released</a>!</dd>
-
-                <dt>July 13th, 2011<dt>
-                <dd><strong>Rack 1.3.1</strong> has been <a href="https://groups.google.com/forum/?fromgroups#!searchin/rack-devel/[ANN]$20Rack$201.3.1/rack-devel/vDV8nDCXm6s/Y2Q9x5NguvMJ">released</a>!</dd>
-
-                <dt>May 23rd, 2011<dt>
-                <dd><strong>Rack 1.3.0</strong> has been <a href="http://groups.google.com/group/rack-devel/browse_thread/thread/7dce0d9b17ec9cb3">released</a>!</dd>
-
-                <dt>June 13th, 2010</dt><dd>
-                <strong>Rack 1.2.0</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/364270">released</a>!</dd>
-
-                <dt>January 3rd, 2010</dt><dd>
-                <strong>Rack 1.1.0</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/354528">released</a>!</dd>
-
-                <dt>October 18th, 2009</dt><dd>
-                <strong>Rack 1.0.1</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/348498">released</a>!</dd>
-
-                <dt>April 25th, 2009</dt><dd>
-                <strong>Rack 1.0.0</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/334996">released</a>!</dd>
-
-                <dt>January 9th, 2009</dt><dd>
-                <strong>Rack 0.9.1</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/324389">released</a>!  This is a security release, please update.</dd>
-
-                <dt>January 6th, 2009</dt><dd><strong>Rack 0.9</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/324073">released</a>!</dd>
-
-                <dt>December 24th, 2008</dt><dd><a href="http://groups.google.com/group/rack-devel/browse_thread/thread/a5f156a8c592ab1c">Introducing the Rack Core Team</a></dd>
-
-                <dt>December 23rd, 2008</dt><dd><a href="http://www.heise.de/newsticker/Rails-Erfinder-stellt-Rails-Metal-vor--/meldung/120849">Rack is mentioned on heise.de</a>!</dd>
-
-                <dt>December 5th, 2008</dt><dd><a href="http://weblog.rubyonrails.org/2008/12/5/this-week-in-edge-rails">The tighter integration of Rails with Rack continues.</a></dd>
-
-                <dt>August 21st, 2008</dt><dd><strong>Rack 0.4</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/312148">released</a>!</dd>
-
-                <dt>May 31st, 2008</dt><dd>Rack development <a href="https://github.com/rack/rack">moves to Git</a>.</dd>
-
-                <dt>May 24th, 2008</dt><dd>There now is a Google Group on <a href="http://groups.google.com/group/rack-devel">Rack Development</a>.</dd>
-
-                <dt>February 26th, 2008</dt><dd><strong>Rack 0.3</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/292557">released</a>!</dd>
-
-                <dt>November 10th, 2007</dt><dd>Rack has been presented at the Euruko 2007.</dd>
-
-                <dt>October 2007</dt><dd>Ryan Allen gave a <a href="http://yeahnah.org/files/rack-presentation-oct-07.pdf">presentation on Rack</a> (PDF).</dd>
-
-                <dt>May 16th, 2007</dt><dd><strong>Rack 0.2</strong> has been <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/251804">released</a>!</dd>
-            </dl>
-        </section>
-
-        <section id="documentation">
-            <h1>Documentation</h1>
-
-            <p>
-                Read <a href="http://rack.rubyforge.org/doc/SPEC.html">The Rack interface specification</a>
-                and <a href="http://rack.rubyforge.org/doc/">other documentation</a>.
-            </p>
-        </section>
-
-        <section id="handlers-and-adapters">
-            <h1>Supported Handlers and Adapters</h1>
-
-            <p>See <a href="http://rack.rubyforge.org/doc/">the documentation</a>.</p>
-        </section>
-
-        <section id="blurb">
-            <h1>Blurb</h1>
-
-            <blockquote>
-                Personifi uses Rack cause we like its elegant design, speed and fast
-                turn around time. With Rack we serve billions of requests per
-                month. It makes our life good!
-                <div class="src">&#8212;Armin Roehrl, Lead Engineer of Personifi</div>
-            </blockquote>
-        </section>
-
-        <section id="license">
-            <h1>License</h1>
-
-            <p>
-                Rack is licensed under the very liberal
-                <a href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>.
-            </p>
-        </section>
-
-        <section id="get-it">
-            <h1>Get it!</h1>
-
-            <p>
-            Releases:
-            </p>
-            <dl>
-                <dt>Rack 1.4.1</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.4.1.tar.gz">rack-1.4.1.tar.gz</a> (<tt>e822bb1c1dd9306f1f4cc6c7c208ac3fe0aa4018</tt>)</dd>
-                <dt>Rack 1.4.0</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.4.0.tar.gz">rack-1.4.0.tar.gz</a> (<tt>0fec4d01e20b1ad13fd7809d0083292a71d3ec84</tt>)</dd>
-                <dt>Rack 1.3.6</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.3.6.tar.gz">rack-1.3.6.tar.gz</a> (<tt>367f91c3b3917a8d3709c8ec13d09cca5d3ca253</tt>)</dd>
-                <dt>Rack 1.3.5</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.3.5.tar.gz">rack-1.3.5.tar.gz</a> (<tt>9768a2140711c3a92e194ddeb2f5671f6aa89bf3</tt>)</dd>
-                <dt>Rack 1.3.4</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.3.4.tar.gz">rack-1.3.4.tar.gz</a> (<tt>bdd02c8185c0c184e56b05489554f91b0f5feb4a</tt>)</dd>
-                <dt>Rack 1.3.3</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.3.3.tar.gz">rack-1.3.3.tar.gz</a> (<tt>5bcb00a9d8cbd87c415ad08958db0768ce589c1b</tt>)</dd>
-                <dt>Rack 1.3.2</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.3.2.tar.gz">rack-1.3.2.tar.gz</a> (<tt>b351131fb809375f7ebed128a541664b8be26c8b</tt>)</dd>
-                <dt>Rack 1.3.1</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.3.1.tar.gz">rack-1.3.1.tar.gz</a> (<tt>d0149b63b50b3c6b819ccabf6d93ce28f4de9db6</tt>)</dd>
-                <dt>Rack 1.3.0</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.3.0.tar.gz">rack-1.3.0.tar.gz</a> (<tt>214a3af03896e9b1fbddbe647b796426d930edd8</tt>)</dd>
-                <dt>Rack 1.2.0</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.2.0.tar.gz">rack-1.2.0.tar.gz</a> (<tt>c69b0a120b249832f9701e6a9fe6692e6728940f</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/71197/rack-1.2.0.tar.gz">rack-1.2.0.tar.gz (Rubyforge)</a></dd>
-                <dt>Rack 1.1.0</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.1.0.tar.gz">rack-1.1.0.tar.gz</a> (<tt>0289477e44262c5067c61cfe13b39d0de2f3f3de</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/68402/rack-1.1.0.tar.gz">rack-1.1.0.tar.gz (Rubyforge)</a></dd>
-                <dt>Rack 1.0.1</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.0.1.tar.gz">rack-1.0.1.tar.gz</a> (<tt>d489661be03d0c5d08daa4158b09e937778783ed</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/65735/rack-1.0.1.tar.gz">rack-1.0.1.tar.gz (Rubyforge)</a></dd>
-                <dt>Rack 1.0.0</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-1.0.0.tar.gz">rack-1.0.0.tar.gz</a> (<tt>53609db88608fb846a0a62df803ae2bb33372cfe</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/55680/rack-1.0.0.tar.gz">rack-1.0.0.tar.gz (Rubyforge)</a></dd>
-                <dt>Rack 0.9.1</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-0.9.1.tar.gz">rack-0.9.1.tar.gz</a> (<tt>237e24207b39c384d78c266d86bbf2a0808dc417</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/49909/rack-0.9.1.tar.gz">rack-0.9.1.tar.gz (Rubyforge)</a></dd>
-                <dt>Rack 0.9</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-0.9.0.tar.gz">rack-0.9.0.tar.gz</a> (<tt>445f542ed89308b9352d7653f33fe63c50453e3e</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/49703/rack-0.9.0.tar.gz">rack-0.9.0.tar.gz (Rubyforge)</a></dd>
-                <dt>Rack 0.4</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-0.4.0.tar.gz">rack-0.4.0.tar.gz</a> (<tt>65a19e53a0dc661f4055d043126585b49a0b618d</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/41599/rack-0.4.0.tar.gz">rack-0.4.0.tar.gz (Rubyforge)</a></dd>
-                <dt>Rack 0.3</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-0.3.0.tar.gz">rack-0.3.0.tar.gz</a> (<tt>5e92f2901d2dc77eb0453fc3acdd6c4a07fc167a</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/32984/rack-0.3.0.tar.gz">rack-0.3.0.tar.gz (Rubyforge)</a></dd>
-                <dt>Rack 0.2</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-0.2.0.tar.gz">rack-0.2.0.tar.gz</a> (<tt>f1063711f228d19875a3211d71308b5c</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/20773/rack-0.2.0.tar.gz">rack-0.2.0.tar.gz (Rubyforge)</a></dd>
-                <dt>Rack 0.1</dt>
-                <dd><a href="http://chneukirchen.org/releases/rack-0.1.0.tar.gz">rack-0.1.0.tar.gz</a> (<tt>79b46158b7b30adcd7a9148cc7ed4305</tt>)</dd>
-                <dd><a href="http://rubyforge.org/frs/download.php/18067/rack-0.1.0.tar.gz">rack-0.1.0.tar.gz (Rubyforge)</a></dd>
-            </dl>
-
-            <p> Or, via Gems: </p>
-            <pre><code>gem install rack</code></pre>
-
-            <p>Currently, bleeding-edge Rack is available via Git:</p>
-
-            <pre><code>git clone git://github.com/rack/rack.git</code></pre>
-
-            <p>
-                The repository is <a href="https://github.com/rack/rack">browsable online</a>, too.
-            </p>
-        </section>
-
-        <section id="contact">
-            <h1>Contact</h1>
-
-            <p>
-                Send questions or suggestions to
-                <a href="mailto:rack-devel@googlegroups.com">rack-devel@googlegroups.com</a>
-                (<a href="http://groups.google.com/group/rack-devel">archives</a>), or
-                visit the Rack IRC channel <code>#rack</code> at <a href="http://freenode.net/">Freenode</a>.
-            </p>
-        </section>
-
-        <section id="more-information">
-            <h1>More information</h1>
-
-            <ul>
-                <li><a href="http://chneukirchen.org/blog/archive/2007/02/introducing-rack.html">Introducing Rack</a>, an introductory blog post by Christian Neukirchen.</li>
-                <li><a href="http://rubyforge.org/projects/rack/">Rack project at Rubyforge</a>.</li>
-                <li><a href="http://wiki.github.com/rack/rack">The Rack Wiki</a> has tutorials and presentations.</li>
-            </ul>
+                <h1>Releases</h1>
+                <dl>
+                    <dt>Rack 1.4.1</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.4.1.tar.gz">rack-1.4.1.tar.gz</a> (<tt>e822bb1c1dd9306f1f4cc6c7c208ac3fe0aa4018</tt>)</dd>
+                    <dt>Rack 1.4.0</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.4.0.tar.gz">rack-1.4.0.tar.gz</a> (<tt>0fec4d01e20b1ad13fd7809d0083292a71d3ec84</tt>)</dd>
+                    <dt>Rack 1.3.6</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.3.6.tar.gz">rack-1.3.6.tar.gz</a> (<tt>367f91c3b3917a8d3709c8ec13d09cca5d3ca253</tt>)</dd>
+                    <dt>Rack 1.3.5</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.3.5.tar.gz">rack-1.3.5.tar.gz</a> (<tt>9768a2140711c3a92e194ddeb2f5671f6aa89bf3</tt>)</dd>
+                    <dt>Rack 1.3.4</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.3.4.tar.gz">rack-1.3.4.tar.gz</a> (<tt>bdd02c8185c0c184e56b05489554f91b0f5feb4a</tt>)</dd>
+                    <dt>Rack 1.3.3</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.3.3.tar.gz">rack-1.3.3.tar.gz</a> (<tt>5bcb00a9d8cbd87c415ad08958db0768ce589c1b</tt>)</dd>
+                    <dt>Rack 1.3.2</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.3.2.tar.gz">rack-1.3.2.tar.gz</a> (<tt>b351131fb809375f7ebed128a541664b8be26c8b</tt>)</dd>
+                    <dt>Rack 1.3.1</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.3.1.tar.gz">rack-1.3.1.tar.gz</a> (<tt>d0149b63b50b3c6b819ccabf6d93ce28f4de9db6</tt>)</dd>
+                    <dt>Rack 1.3.0</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.3.0.tar.gz">rack-1.3.0.tar.gz</a> (<tt>214a3af03896e9b1fbddbe647b796426d930edd8</tt>)</dd>
+                    <dt>Rack 1.2.0</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.2.0.tar.gz">rack-1.2.0.tar.gz</a> (<tt>c69b0a120b249832f9701e6a9fe6692e6728940f</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/71197/rack-1.2.0.tar.gz">rack-1.2.0.tar.gz (Rubyforge)</a></dd>
+                    <dt>Rack 1.1.0</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.1.0.tar.gz">rack-1.1.0.tar.gz</a> (<tt>0289477e44262c5067c61cfe13b39d0de2f3f3de</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/68402/rack-1.1.0.tar.gz">rack-1.1.0.tar.gz (Rubyforge)</a></dd>
+                    <dt>Rack 1.0.1</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.0.1.tar.gz">rack-1.0.1.tar.gz</a> (<tt>d489661be03d0c5d08daa4158b09e937778783ed</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/65735/rack-1.0.1.tar.gz">rack-1.0.1.tar.gz (Rubyforge)</a></dd>
+                    <dt>Rack 1.0.0</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-1.0.0.tar.gz">rack-1.0.0.tar.gz</a> (<tt>53609db88608fb846a0a62df803ae2bb33372cfe</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/55680/rack-1.0.0.tar.gz">rack-1.0.0.tar.gz (Rubyforge)</a></dd>
+                    <dt>Rack 0.9.1</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-0.9.1.tar.gz">rack-0.9.1.tar.gz</a> (<tt>237e24207b39c384d78c266d86bbf2a0808dc417</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/49909/rack-0.9.1.tar.gz">rack-0.9.1.tar.gz (Rubyforge)</a></dd>
+                    <dt>Rack 0.9</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-0.9.0.tar.gz">rack-0.9.0.tar.gz</a> (<tt>445f542ed89308b9352d7653f33fe63c50453e3e</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/49703/rack-0.9.0.tar.gz">rack-0.9.0.tar.gz (Rubyforge)</a></dd>
+                    <dt>Rack 0.4</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-0.4.0.tar.gz">rack-0.4.0.tar.gz</a> (<tt>65a19e53a0dc661f4055d043126585b49a0b618d</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/41599/rack-0.4.0.tar.gz">rack-0.4.0.tar.gz (Rubyforge)</a></dd>
+                    <dt>Rack 0.3</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-0.3.0.tar.gz">rack-0.3.0.tar.gz</a> (<tt>5e92f2901d2dc77eb0453fc3acdd6c4a07fc167a</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/32984/rack-0.3.0.tar.gz">rack-0.3.0.tar.gz (Rubyforge)</a></dd>
+                    <dt>Rack 0.2</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-0.2.0.tar.gz">rack-0.2.0.tar.gz</a> (<tt>f1063711f228d19875a3211d71308b5c</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/20773/rack-0.2.0.tar.gz">rack-0.2.0.tar.gz (Rubyforge)</a></dd>
+                    <dt>Rack 0.1</dt>
+                    <dd><a href="http://chneukirchen.org/releases/rack-0.1.0.tar.gz">rack-0.1.0.tar.gz</a> (<tt>79b46158b7b30adcd7a9148cc7ed4305</tt>)</dd>
+                    <dd><a href="http://rubyforge.org/frs/download.php/18067/rack-0.1.0.tar.gz">rack-0.1.0.tar.gz (Rubyforge)</a></dd>
+                </dl>
+            </section>
         </section>
 
         <footer id="imprint">
             &#169; 2007, 2008, 2009, 2010, 2011, 2012 <a href="mailto:chneukirchen@gmail.com">Christian Neukirchen</a>
         </footer>
     </div>
+    <script type="text/javascript">
+        SyntaxHighlighter.defaults.toolbar = false;
+        SyntaxHighlighter.all();
+    </script>
 </body>
 </html>

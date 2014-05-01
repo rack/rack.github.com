@@ -12,7 +12,7 @@ h1 {
 }
 
 div.content {
-    width: 980px;
+    max-width: 980px;
     margin: 0 auto;
     border: solid #9CDAF9;
     border-width: 0 15px;
@@ -74,7 +74,7 @@ blockquote .src {
 section.layout {
     display: inline-block;
     vertical-align: top;
-    width: 455px;
+    width: 45%;
     margin: 0 12px;
     padding: 0;
 }

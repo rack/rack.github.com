@@ -47,7 +47,7 @@
                     ['200', {'Content-Type' =&gt; 'text/html'}, ['A barebones rack app.']]
                 end
 
-                Rack::Handler::WEBrick.run app
+                Rack::Server.start :app => app, :Port => 9000
             </pre>
             <p>
                 Or, you can use the <span class="code">rackup</span> command line

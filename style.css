@@ -11,6 +11,19 @@ h1 {
     border-width: 0 15px;
 }
 
+h2 {
+    padding: 10px;
+    background: #CCDDEE;
+
+    border: solid #7CBAE9;
+    border-width: 0 15px;
+}
+
+section h2 {
+  font-size: 1.17em;
+}
+
+
 div.content {
     max-width: 980px;
     margin: 0 auto;
@@ -97,14 +110,15 @@ div.content * {
 
 /* {{{ Neat-O Header Borders */
 
-div.content > header h1 {
+div.content > header h1,
+div.content > header h2 {
     margin: 0 -15px;
 }
 
-section.layout section h1 {
+section.layout section h2 {
 }
 
-section.layout#info section h1 {
+section.layout#info section h2 {
 }
 
 /* }}} */
@@ -112,4 +126,12 @@ section.layout#info section h1 {
 div.syntaxhighlighter {
     padding: 10px 0;
     margin-bottom: 0 ! important;
+}
+
+.hidden {
+  display: none;
+}
+
+.verify-hash {
+  font-family: monospace;
 }
